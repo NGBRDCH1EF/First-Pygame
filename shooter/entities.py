@@ -62,6 +62,7 @@ class Enemy:
         if isinstance(size_range,tuple):
             rand_size = random.randint(size_range[0],size_range[1])
             ratio = statistics.mean(size_range) / rand_size  # bigger size → smaller ratio
+            ratio = max(0.5, min(ratio, 1.5))   # keep multiplier between 0.5x and 1.5x
             speed *= ratio
         else: 
             rand_size = size_range
@@ -96,9 +97,27 @@ class Enemy:
 
         return cls(rect, dx, dy, speed,color)
 
-    def update(self):
+    def update(self, width, height):
+        # Move enemy
         self.rect.x += self.dx * self.speed
         self.rect.y += self.dy * self.speed
+
+        # Bounce left wall
+        if self.rect.left <= 0 and self.dx < 0:
+            self.dx *= -1
+
+        # Bounce right wall
+        if self.rect.right >= width and self.dx > 0:
+            self.dx *= -1
+
+        # Bounce top wall
+        if self.rect.top <= 0 and self.dy < 0:
+            self.dy *= -1
+
+        # Bounce bottom wall
+        if self.rect.bottom >= height and self.dy > 0:
+            self.dy *= -1
+        
 
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect)

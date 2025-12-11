@@ -31,8 +31,8 @@ PLAYER_SIZE = 40
 PLAYER_SPEED = 12
 
 #Enemy Setup
-ENEMY_BASE_SPEED = 5    #speed of median size enemy
-ENEMY_SIZE = (5,120)    #min & max size for enemy
+ENEMY_BASE_SPEED = 3    #speed of median size enemy
+ENEMY_SIZE = (20,100)    #min & max size for enemy
 ENEMY_COLOR      = RED
 
 #mouse marker setup
@@ -102,7 +102,7 @@ while running:
     pygame.draw.rect(window, GREEN, player)
     for b in bullets : b.draw(window) 
     for e in enemies:
-        e.update()
+        e.update(WIDTH,HEIGHT)
         e.draw(window)
     spawn_timer -= 1
 
