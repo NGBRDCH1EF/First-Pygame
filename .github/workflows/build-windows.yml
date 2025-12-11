@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12.3'  # or whatever you use
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
@@ -28,8 +28,7 @@ jobs:
 
       - name: Build with PyInstaller
         run: |
-          pyinstaller --onefile main.py
-        # If your entry file isn't main.py, change it here
+          pyinstaller --onefile main.py --add-data "images;images"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
