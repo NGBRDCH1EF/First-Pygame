@@ -12,7 +12,7 @@ BLACK = (0, 0, 0)
 # --- base (virtual) resolution ---
 BASE_WIDTH, BASE_HEIGHT = 800, 400
 
-# resizable window (can be any size, we'll scale into it)
+# resizable window 
 window = pygame.display.set_mode((BASE_WIDTH, BASE_HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("Runner")
 
@@ -93,6 +93,7 @@ while running:
                     obstacle_passed = False
                     current_frame = 0
                     frame_timer = 0
+                    obstacle_speed = 10
                 else:
                     # jump (only if not game over and on ground)
                     if on_ground:
@@ -116,6 +117,7 @@ while running:
         if obstacle.x <= -obstacle_width:
             obstacle.x = BASE_WIDTH + obstacle_width
             obstacle_passed = False  # new obstacle coming, not counted yet
+            if not score % 10: obstacle_speed += 1
 
         # check collision
         if player.colliderect(obstacle):
