@@ -2,7 +2,7 @@ import pygame
 import sys
 import math
 from entities import Bullet , Enemy
-
+import random
 pygame.init()
 
 # --- colors ---
@@ -23,7 +23,7 @@ bullets:list[Bullet] = []
 enemies:list[Enemy]  = []
 
 #Timer
-ENEMY_SPAWN_INTERVAL = 180      #TIME BETWEEN SPAWNS (FRAMES)
+ENEMY_SPAWN_INTERVAL = 60      #TIME BETWEEN SPAWNS (FRAMES)
 spawn_timer = ENEMY_SPAWN_INTERVAL
 
 # --- player setup ---
@@ -31,7 +31,10 @@ PLAYER_SIZE = 40
 PLAYER_SPEED = 12
 
 #Enemy Setup
-ENEMY_SPEED = 5
+ENEMY_BASE_SPEED = 5    #speed of median size enemy
+ENEMY_SIZE = (5,120)    #min & max size for enemy
+ENEMY_COLOR      = RED
+
 #mouse marker setup
 CURSOR_SIZE  = 10
 
@@ -76,14 +79,22 @@ while running:
     if player.bottom > HEIGHT:
         player.bottom = HEIGHT
 
-
     #Create Enemies
     if spawn_timer <= 0:
         spawn_timer = ENEMY_SPAWN_INTERVAL
-        new_enemy = Enemy.spawn_at_edge(WIDTH,HEIGHT,20,(player.centerx,player.centery),ENEMY_SPEED)
+        new_enemy = Enemy.spawn_at_edge(WIDTH,HEIGHT,(10,100),(player.centerx,player.centery),ENEMY_BASE_SPEED)
         enemies.append(new_enemy)
 
-    #update entites & timer
+    #check Bullet-Enemy collision
+    for e in enemies[:]:
+        for b in bullets[:]:
+            if e.hit_by(b):
+                enemies.remove(e)
+                bullets.remove(b)
+
+
+
+    #Update entites & timer
     for b in bullets: b.update()
 
     # --- draw ---
@@ -94,7 +105,7 @@ while running:
         e.update()
         e.draw(window)
     spawn_timer -= 1
-    
+
     pygame.display.flip()
     clock.tick(60)
 

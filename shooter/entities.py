@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import pygame
 import math
 import random
+import statistics
 
 @dataclass
 class Bullet:
@@ -41,34 +42,46 @@ class Enemy:
     dx: float
     dy: float
     speed: float
+    color:tuple[int,int,int]  #RGB value for color
+
 
     @classmethod
     def spawn_at_edge(
         cls,
         width: int,
         height: int,
-        size: int,
+        size_range: tuple[int,int] | int,   #min and max size or set size
         destination: tuple[int, int],
         speed: float,
+        color:tuple[int,int,int]=(255,0,0)  #RGB value for color
+
     ):
         """Spawn enemy at random edge of the screen that moves toward destination."""
         side = random.choice(["top", "bottom", "left", "right"])
+        
+        if isinstance(size_range,tuple):
+            rand_size = random.randint(size_range[0],size_range[1])
+            ratio = statistics.mean(size_range) / rand_size  # bigger size → smaller ratio
+            speed *= ratio
+        else: 
+            rand_size = size_range
+        
 
         match side:
             case "top":
-                ox = random.randint(0, width - size)
-                oy = -size          # fully above screen
+                ox = random.randint(0, width - rand_size)
+                oy = -rand_size          # fully above screen
             case "bottom":
-                ox = random.randint(0, width - size)
+                ox = random.randint(0, width - rand_size)
                 oy = height         # fully below screen
             case "left":
-                ox = -size
-                oy = random.randint(0, height - size)
+                ox = -rand_size
+                oy = random.randint(0, height - rand_size)
             case "right":
                 ox = width
-                oy = random.randint(0, height - size)
+                oy = random.randint(0, height - rand_size)
 
-        rect = pygame.Rect(ox, oy, size, size)
+        rect = pygame.Rect(ox, oy, rand_size, rand_size)
 
         # direction vector toward destination
         dx = destination[0] - ox
@@ -81,13 +94,15 @@ class Enemy:
             dx /= length
             dy /= length
 
-        return cls(rect, dx, dy, speed)
+        return cls(rect, dx, dy, speed,color)
 
     def update(self):
         self.rect.x += self.dx * self.speed
         self.rect.y += self.dy * self.speed
 
     def draw(self, surface):
-        pygame.draw.rect(surface, (255, 0, 0), self.rect)
+        pygame.draw.rect(surface, self.color, self.rect)
 
+    def hit_by(self, bullet):
+        return self.rect.colliderect(bullet.rect)
 
