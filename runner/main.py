@@ -29,8 +29,8 @@ score = 0
 obstacle_passed = False  # has the current obstacle been counted for score?
 
 # --- player images & rect ---
-player_img1 = pygame.image.load("images/guy.png").convert_alpha()
-player_img2 = pygame.image.load("images/guy2.png").convert_alpha()
+player_img1 = pygame.image.load("runner/images/guy.png").convert_alpha()
+player_img2 = pygame.image.load("runner/images/guy2.png").convert_alpha()
 player_img1 = pygame.transform.scale(player_img1, (50, 50))
 player_img2 = pygame.transform.scale(player_img2, (50, 50))
 player_imgs = [player_img1, player_img2]
@@ -52,7 +52,7 @@ ground = pygame.Rect(0, GROUND_Y, BASE_WIDTH, BASE_HEIGHT // 10)
 # --- obstacle ---
 obstacle_height = 50
 obstacle_width = 50
-obstacle_img = pygame.image.load("images/rock.png").convert_alpha()
+obstacle_img = pygame.image.load("runner/images/rock.png").convert_alpha()
 obstacle_img = pygame.transform.scale(obstacle_img, (50, 50))
 
 obstacle = pygame.Rect(
