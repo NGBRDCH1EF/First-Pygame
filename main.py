@@ -9,15 +9,20 @@ SKY_BLUE = (135, 206, 235)
 GREEN = (50, 205, 50)
 BLACK = (0, 0, 0)
 
-# --- window setup ---
-WIDTH, HEIGHT = 800, 400
-window = pygame.display.set_mode((WIDTH, HEIGHT))
+# --- base (virtual) resolution ---
+BASE_WIDTH, BASE_HEIGHT = 800, 400
+
+# resizable window (can be any size, we'll scale into it)
+window = pygame.display.set_mode((BASE_WIDTH, BASE_HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("Runner")
+
+# surface we actually draw the game onto (fixed resolution)
+game_surface = pygame.Surface((BASE_WIDTH, BASE_HEIGHT))
 
 clock = pygame.time.Clock()
 
-# world setup
-GROUND_Y = HEIGHT - (HEIGHT // 10)
+# world setup (all in base resolution coordinates)
+GROUND_Y = BASE_HEIGHT - (BASE_HEIGHT // 10)
 game_over = False
 score = 0
 obstacle_passed = False  # has the current obstacle been counted for score?
@@ -29,7 +34,7 @@ player_img1 = pygame.transform.scale(player_img1, (50, 50))
 player_img2 = pygame.transform.scale(player_img2, (50, 50))
 player_imgs = [player_img1, player_img2]
 
-player = pygame.Rect(WIDTH // 3, GROUND_Y - 50, 50, 50)  # x, y, width, height
+player = pygame.Rect(BASE_WIDTH // 3, GROUND_Y - 50, 50, 50)  # x, y, width, height
 player_vel_y = 0
 GRAVITY = 1
 JUMP_STRENGTH = -14
@@ -40,24 +45,25 @@ current_frame = 0
 frame_timer = 0
 FRAME_SPEED = 8  # frames before swapping 0 <-> 1
 
-# Define Ground
-ground = pygame.Rect(0, GROUND_Y, WIDTH, HEIGHT // 10)
+# --- ground ---
+ground = pygame.Rect(0, GROUND_Y, BASE_WIDTH, BASE_HEIGHT // 10)
 
-# Define simple obstacle
+# --- obstacle ---
 obstacle_height = 50
 obstacle_width = 50
 obstacle_img = pygame.image.load("images/rock.png").convert_alpha()
 obstacle_img = pygame.transform.scale(obstacle_img, (50, 50))
 
 obstacle = pygame.Rect(
-    WIDTH + obstacle_width,
+    BASE_WIDTH + obstacle_width,
     GROUND_Y - obstacle_height,
     obstacle_width,
     obstacle_height
 )
 obstacle_speed = 10
 
-font = pygame.font.SysFont(None, 60)
+font = pygame.font.SysFont(None, 40)
+big_font = pygame.font.SysFont(None, 60)
 
 # --- main game loop ---
 running = True
@@ -72,11 +78,11 @@ while running:
             if event.key == pygame.K_SPACE:
                 if game_over:
                     # reset everything
-                    player.x = WIDTH // 3
+                    player.x = BASE_WIDTH // 3
                     player.y = GROUND_Y - 50
                     player_vel_y = 0
                     on_ground = True
-                    obstacle.x = WIDTH + obstacle_width
+                    obstacle.x = BASE_WIDTH + obstacle_width
                     game_over = False
                     score = 0
                     obstacle_passed = False
@@ -103,7 +109,7 @@ while running:
         # move obstacle
         obstacle.x -= obstacle_speed
         if obstacle.x <= -obstacle_width:
-            obstacle.x = WIDTH + obstacle_width
+            obstacle.x = BASE_WIDTH + obstacle_width
             obstacle_passed = False  # new obstacle coming, not counted yet
 
         # check collision
@@ -121,20 +127,39 @@ while running:
             frame_timer = 0
             current_frame = (current_frame + 1) % 2  # swap 0 <-> 1
 
-    # --- draw ---
-    window.fill(SKY_BLUE)  # sky blue background
+    # --- draw everything onto game_surface (virtual resolution) ---
+    game_surface.fill(SKY_BLUE)  # sky blue background
 
-    pygame.draw.rect(window, GREEN, ground)
-    window.blit(obstacle_img, obstacle)
-    window.blit(player_imgs[current_frame], player)
+    pygame.draw.rect(game_surface, GREEN, ground)
+    game_surface.blit(obstacle_img, obstacle)
+    game_surface.blit(player_imgs[current_frame], player)
 
     # draw score (always visible)
     score_text = font.render(f"Score: {score}", True, BLACK)
-    window.blit(score_text, (10, 10))
+    game_surface.blit(score_text, (10, 10))
 
     if game_over:
-        text = font.render("GAME OVER - Press SPACE", True, BLACK)
-        window.blit(text, (WIDTH // 10, HEIGHT // 3))
+        text = big_font.render("GAME OVER - Press SPACE", True, BLACK)
+        text_rect = text.get_rect(center=(BASE_WIDTH // 2, BASE_HEIGHT // 2))
+        game_surface.blit(text, text_rect)
+
+    # --- scale game_surface to window size ---
+    win_w, win_h = window.get_size()
+    scale_x = win_w / BASE_WIDTH
+    scale_y = win_h / BASE_HEIGHT
+    scale = min(scale_x, scale_y)  # keep aspect ratio
+
+    scaled_w = int(BASE_WIDTH * scale)
+    scaled_h = int(BASE_HEIGHT * scale)
+
+    scaled_surface = pygame.transform.scale(game_surface, (scaled_w, scaled_h))
+
+    # center the scaled game on the window
+    offset_x = (win_w - scaled_w) // 2
+    offset_y = (win_h - scaled_h) // 2
+
+    window.fill(BLACK)  # letterbox background
+    window.blit(scaled_surface, (offset_x, offset_y))
 
     pygame.display.flip()
     clock.tick(60)
