@@ -23,6 +23,7 @@ clock = pygame.time.Clock()
 
 # world setup (all in base resolution coordinates)
 GROUND_Y = BASE_HEIGHT - (BASE_HEIGHT // 10)
+paused =  False
 game_over = False
 score = 0
 obstacle_passed = False  # has the current obstacle been counted for score?
@@ -75,6 +76,10 @@ while running:
 
         # keydown events
         if event.type == pygame.KEYDOWN:
+            # toggle pause with ESC (only if not game over)
+            if event.key == pygame.K_ESCAPE and not game_over:
+                paused = not paused
+            
             if event.key == pygame.K_SPACE:
                 if game_over:
                     # reset everything
@@ -95,7 +100,7 @@ while running:
                         on_ground = False
 
     # --- update game state (only if not game over) ---
-    if not game_over:
+    if not game_over and not paused:
         # apply gravity
         player_vel_y += GRAVITY
         player.y += player_vel_y
@@ -140,6 +145,11 @@ while running:
 
     if game_over:
         text = big_font.render("GAME OVER - Press SPACE", True, BLACK)
+        text_rect = text.get_rect(center=(BASE_WIDTH // 2, BASE_HEIGHT // 2))
+        game_surface.blit(text, text_rect)
+
+    elif paused:
+        text = big_font.render("PAUSED", True, BLACK)
         text_rect = text.get_rect(center=(BASE_WIDTH // 2, BASE_HEIGHT // 2))
         game_surface.blit(text, text_rect)
 
