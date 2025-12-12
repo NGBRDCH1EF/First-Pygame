@@ -25,7 +25,7 @@ bullets:list[Bullet] = []
 enemies:list[Enemy]  = []
 
 #Timer
-ENEMY_SPAWN_INTERVAL = 30      #TIME BETWEEN SPAWNS (FRAMES)
+ENEMY_SPAWN_INTERVAL = 20      #TIME BETWEEN SPAWNS (FRAMES)
 spawn_timer = ENEMY_SPAWN_INTERVAL
 
 # --- player setup ---
@@ -35,6 +35,7 @@ PLAYER_HEALTH = 500
 HEALTH_REGEN  = 35      #per second
 MAX_AMMO      = 30
 AMMO_REGEN    = 2       #per second
+BULLET_SPEED  = 20
 
 #UI setup
 big_font = pygame.font.SysFont(None, 60)
@@ -46,7 +47,7 @@ ammo_bar = AmmoBar.create(MAX_AMMO,AMMO_REGEN)
 
 
 #Enemy Setup
-ENEMY_BASE_SPEED = 4.5    #speed of median size enemy
+ENEMY_BASE_SPEED = 6    #speed of median size enemy
 ENEMY_SIZE = (40,180)    #min & max size for enemy
 ENEMY_COLOR      = RED
 
@@ -73,7 +74,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and ammo_bar.ammo > 0:
-            bullets.append(Bullet.from_points(player.center,pygame.mouse.get_pos() , speed=3))
+            bullets.append(Bullet.from_points(player.center,pygame.mouse.get_pos() , speed=BULLET_SPEED))
             ammo_bar.ammo -= 1
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -173,7 +174,7 @@ while running:
         text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         window.blit(text, text_rect)
     elif paused:
-        text = big_font.render("", True, BLACK)
+        text = big_font.render("PAUSED", True, BLACK)
         text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         window.blit(text, text_rect)
 
