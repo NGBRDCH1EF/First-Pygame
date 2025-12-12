@@ -36,7 +36,7 @@ ground = pygame.Rect(0, GROUND_LEVEL, WIDTH, GROUND_THICKNESS)
 #cannon setup
 CANNON_BASE = pygame.image.load('artillery/assets/cannon_base.png')
 CANNON_BARREL = pygame.image.load('artillery/assets/cannon_barrel.png')
-cannon = Cannon(pygame.Vector2(100, GROUND_LEVEL), max_muzzle_velocity=20)
+cannon = Cannon(pygame.Vector2(100, GROUND_LEVEL), max_muzzle_velocity=40)
 cannon.art.append(CANNON_BASE)
 cannon.art.append(CANNON_BARREL)
 MUZZLE_VELOCITY_INCREMENT =  1  # m/s per key press
@@ -71,6 +71,7 @@ while running:
             elif event.y < 0:  # scroll down
                 cannon.muzzle_velocity = max(cannon.muzzle_velocity - MUZZLE_VELOCITY_INCREMENT, 0)
                 print(cannon.muzzle_velocity)
+        
     keys = pygame.key.get_pressed()
     
     if keys[pygame.K_a]:
