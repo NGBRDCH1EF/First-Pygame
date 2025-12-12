@@ -3,26 +3,14 @@
 Minimal starter projects using Pygame.
 
 ## Description
-A small example project demonstrating a basic Pygame window and animation.
+A small collection of my first games made in pygame
 
-## Screenshot
+## Screenshots
 
 ![Example screenshot](runner/images/example1.png)
 
 ![alt text](shooter/assets/example1.png)
 
+![alt text](artillery/assets/artillery.png)
 
-## Requirements
-- Python 3.8+
-- pygame
-
-
-## Controls
-- ESC - Pause
-- SPACE - JUMP
-
-## Project layout
-- README.md — this file  
-- main.py — entry point  
-- example1.png — screenshot shown above
 
