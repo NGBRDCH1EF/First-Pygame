@@ -140,7 +140,7 @@ while running:
 
         #Check Player-Enemy Collision
         for e in enemies[:]:
-            if player.colliderect(e):
+            if player.colliderect(e.rect):
                 enemies.remove(e)
                 if health_bar.health > 0: health_bar.health -= e.rect.size[0]
                 else: game_over = not game_over
