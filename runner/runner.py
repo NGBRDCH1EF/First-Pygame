@@ -85,7 +85,7 @@ while running:
                     # reset everything
                     player.x = BASE_WIDTH // 3
                     player.y = GROUND_Y - 50
-                    player_vel_y = 0
+               d    player_vel_y = 0
                     on_ground = True
                     obstacle.x = BASE_WIDTH + obstacle_width
                     game_over = False
