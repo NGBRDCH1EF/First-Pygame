@@ -73,7 +73,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and ammo_bar.ammo > 0:
-            bullets.append(Bullet.from_points(player.center,pygame.mouse.get_pos() , speed=15))
+            bullets.append(Bullet.from_points(player.center,pygame.mouse.get_pos() , speed=3))
             ammo_bar.ammo -= 1
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -173,7 +173,7 @@ while running:
         text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         window.blit(text, text_rect)
     elif paused:
-        text = big_font.render("PAUSED", True, BLACK)
+        text = big_font.render("", True, BLACK)
         text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         window.blit(text, text_rect)
 
