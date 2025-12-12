@@ -49,6 +49,8 @@ projectiles:list[Projectile] = []
 
 #main game loop
 while running:
+    dt=clock.tick(60)/1000  #delta time in seconds
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -126,7 +128,6 @@ while running:
     
     #clock and flip
     pygame.display.flip()
-    dt=clock.tick(60)/1000  #delta time in seconds
 
 
     
