@@ -12,6 +12,15 @@ class Weapon:
     
 
 # Example weapons
+GOBLIN_DAGGER = Weapon(
+    name="Goblin Dagger",
+    damage=5,
+    reach=30,
+    arc_deg=50,
+    cooldown=0.4,
+    stamina_cost=3,
+    art = "")
+
 
 DAGGER = Weapon(
     name="Dagger",

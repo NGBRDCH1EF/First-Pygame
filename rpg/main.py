@@ -2,8 +2,8 @@ import pygame
 import random
 from entities.character import Character
 from entities.player import Player
-from entities.enemy import Enemy
 from entities.ui import StatusBar
+from entities.enemies import Goblin
 import data.colors as c
 from systems.camera import Camera
 import data.weapons
@@ -22,7 +22,7 @@ player = Player('Player1',pygame.Vector2(WIDTH//2,HEIGHT//2))
 player.equipped_items['weapon'] = data.weapons.HALBERD
 
 #entity lists
-enemies:list[Enemy] = []
+enemies = []
 weapons_in_world:list[data.weapons.Weapon] = []
 
 #ui objects
@@ -48,38 +48,36 @@ world_background.blit(background_image, (0, 0))
 running = True
 while running:
     dt = clock.tick(60) / 1000  # delta time in seconds
-
+    
+    
+    #input handling---------
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Left click
-                player.try_attack(enemies, camera)
+                attack_dir = player.melee_aim(camera)
+                attack_dir = player.melee_aim(camera)
+                damage,hits = player.melee_attack(enemies, attack_dir)
+                for enemy in hits:
+                    enemy.take_damage(damage)
 
-    #input handling---------
     keys = pygame.key.get_pressed()
     player.handle_input(keys)
-
-
+   
+   
     #update-----------------
     player.update(dt)
-    for e in enemies[:]:
-        e.think(player.pos)
-        e.update(dt)
-        if not e.alive:
-            enemies.remove(e)
     
-    #spawn enemies for testing
-    if len(enemies) < 5:
-        enemy = Enemy(f"Enemy{len(enemies)+1}", pygame.Vector2(
-            pygame.Vector2(
-                random.randint(0, 2000),
-                random.randint(0, 2000)
-            )
-        ))
-        enemies.append(enemy)
-        
-    
+
+    if  len(enemies) < 5:
+        spawn_pos = pygame.Vector2(random.randint(0,2000),random.randint(0,2000))
+        enemies.append(Goblin(f"Goblin{len(enemies)+1}",spawn_pos))
+    for enemy in enemies:
+        enemy.think(player.pos)
+        enemy.update(dt)
+        if not enemy.alive:
+            enemies.remove(enemy)
 
     #update UI elements
     for bar in status_bars:
@@ -94,8 +92,7 @@ while running:
     player.draw(window, camera)
 
     for enemy in enemies:
-        enemy.draw(window, camera,color=c.RED)
-
+        enemy.draw(window, camera, c.RED)
     
     
     #draw UI elements

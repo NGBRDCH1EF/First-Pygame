@@ -1,6 +1,7 @@
 import pygame
 import data.colors as c
 import data.weapons
+import math
 
 class Character:
     def __init__(self, name: str, pos: pygame.Vector2):
@@ -61,6 +62,40 @@ class Character:
             (int(screen_pos.x), int(screen_pos.y)),
             15
         )
+
+    def melee_attack(self, targets, attack_dir: pygame.Vector2):
+        weapon = self.equipped_items.get("weapon")
+        if weapon is None:
+            return []
+
+        if attack_dir.length_squared() == 0:
+            return []
+
+        if self.stamina < weapon.stamina_cost:
+            damage = weapon.damage // 2
+        else:
+            damage = weapon.damage
+
+        attack_dir = attack_dir.normalize()
+        arc_cos = math.cos(math.radians(weapon.arc_deg / 2))
+
+        hits = []
+        for t in targets:
+            if not getattr(t, "alive", True):
+                continue
+
+            to_t = t.pos - self.pos
+            dist = to_t.length()
+            if dist == 0 or dist > weapon.reach:
+                continue
+
+            if attack_dir.dot(to_t / dist) >= arc_cos:
+                hits.append(t)
+
+        if hits:
+            self.stamina =max(0, self.stamina - weapon.stamina_cost)
+
+        return damage,hits
 
 
 

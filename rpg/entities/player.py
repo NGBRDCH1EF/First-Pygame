@@ -13,49 +13,11 @@ class Player(Character):
             direction = direction.normalize()
         self.velocity = direction * self.get_speed()
 
-    def try_attack(self,enemies:list = None, camera:Camera=None):
-        #set damage
-        weapon = self.equipped_items.get('weapon', None)            
-        if weapon is None:
-            print(f"{self.name} has no weapon equipped!")
-            return
-        damage = weapon.damage
-        
-        # check stamina
-        if self.stamina < weapon.stamina_cost:
-            damage = damage // 2  # half damage if low stamina
-        self.stamina -= weapon.stamina_cost 
-
-        #calculate attack direction
-        mouse_pos = camera.screen_to_world(pygame.Vector2(pygame.mouse.get_pos()))
-        attack_vec = mouse_pos - self.pos
-
-        if attack_vec.length_squared() == 0:
-            return
-        
-        attack_dir = attack_vec.normalize()
-
-        if attack_dir.length_squared() == 0:
-            return
-        
-        arc_cos = math.cos(math.radians(weapon.arc_deg / 2))
-        
-        #hit detection
-        for enemy in enemies:
-            if not getattr(enemy, "alive", True):
-                continue
-
-            to_enemy = enemy.pos - self.pos
-            dist = to_enemy.length()
-
-            if dist > weapon.reach or dist == 0:
-                continue
-
-            if attack_dir.dot(to_enemy / dist) >= arc_cos:
-                enemy.take_damage(damage)
-                self.stamina -= weapon.stamina_cost
-
-        
+    def melee_aim(self, camera: Camera):
+        mouse_pos = pygame.mouse.get_pos()
+        world_mouse_pos = camera.screen_to_world(mouse_pos)
+        attack_dir = world_mouse_pos - self.pos
+        return attack_dir.normalize() if attack_dir.length_squared() > 0 else pygame.Vector2(0, 0)
 
     def equip_weapon(self, weapon):
         self.equipped_items['weapon'] = weapon
