@@ -5,6 +5,7 @@ from entities.enemy import Enemy
 from entities.ui import StatusBar
 import data.colors as c
 from systems.camera import Camera
+import data.weapons
 
 
 
@@ -35,6 +36,7 @@ camera = Camera((WIDTH, HEIGHT), (2000, 2000))
 #world setup
 world_background = pygame.Surface((2000, 2000))
 background_image = pygame.image.load('rpg/assets/gradient.png').convert()
+background_image = pygame.transform.scale(background_image, (2000, 2000))
 world_background.blit(background_image, (0, 0))
 
 #main game loop
@@ -68,7 +70,6 @@ while running:
     player.draw(window, camera)
 
    
-
     
     #draw UI elements
     for bar in status_bars:
