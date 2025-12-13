@@ -4,23 +4,28 @@ import data.weapons
 
 
 class Melee_Enemy(Character):
-    def think(self, player_pos: pygame.Vector2):
+    def think(self, target:Character):
         # super-simple “chase player” AI
-        direction = (player_pos - self.pos)
+        direction = (target.pos - self.pos)
         if direction.length_squared() > 0:
             direction = direction.normalize()
         self.velocity = direction * (self.get_speed() * 0.75)
        
         #avoid overlapping with player
-        dist_to_player = (player_pos - self.pos).length()
-        if dist_to_player < 30:
+        dist_to_player = (target.pos - self.pos).length()
+        if dist_to_player < self.equipped_items['weapon'].reach / 2:
             self.velocity = pygame.Vector2(0, 0)
 
-    def take_damage(self, amount: int):
-        self.health -= amount
-        print(f"{self.name} takes {amount} damage! Health is now {self.health}.")
-        if self.health <= 0:
-            self.die()
+        #attack if in range
+        if dist_to_player <= self.equipped_items['weapon'].reach:
+            hits = self.melee_attack(target, direction)
+            if hits:
+                target.take_damage(hits[0])
+                
+            
+
+
+    
 
     def die(self):
         self.alive = False
@@ -36,3 +41,5 @@ class Goblin(Melee_Enemy):
         self.equipped_items['weapon'] = data.weapons.GOBLIN_DAGGER
 
         print(self.equipped_items['weapon'].damage)
+
+

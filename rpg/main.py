@@ -74,7 +74,7 @@ while running:
         spawn_pos = pygame.Vector2(random.randint(0,2000),random.randint(0,2000))
         enemies.append(Goblin(f"Goblin{len(enemies)+1}",spawn_pos))
     for enemy in enemies:
-        enemy.think(player.pos)
+        enemy.think(player)
         enemy.update(dt)
         if not enemy.alive:
             enemies.remove(enemy)

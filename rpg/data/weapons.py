@@ -14,40 +14,40 @@ class Weapon:
 # Example weapons
 GOBLIN_DAGGER = Weapon(
     name="Goblin Dagger",
-    damage=5,
-    reach=30,
+    damage=1,
+    reach=90,
     arc_deg=50,
-    cooldown=0.4,
+    cooldown=0.5,
     stamina_cost=3,
     art = "")
 
 
 DAGGER = Weapon(
     name="Dagger",
-    damage=15,
-    reach=40,
+    damage=10,
+    reach=90,
     arc_deg=60,
-    cooldown=0.3,
+    cooldown=0.5,
     stamina_cost=5,
     art = "rpg/assets/dagger.png"
 )
 
 SWORD = Weapon(
     name="Sword",
-    damage=25,
-    reach=60,
+    damage=20,
+    reach=120,
     arc_deg=100,
-    cooldown=0.5,
-    stamina_cost=15,
+    cooldown=0.8,
+    stamina_cost=10,
     art = "rpg/assets/sword.png"
 )
 
 HALBERD = Weapon(
     name="Halberd",
-    damage=35,
-    reach=90,
-    arc_deg=70,
-    cooldown=0.8,
-    stamina_cost=25,
+    damage=30,
+    reach=180,
+    arc_deg=120,
+    cooldown=1,
+    stamina_cost=20,
     art = "rpg/assets/halberd.png"
 )

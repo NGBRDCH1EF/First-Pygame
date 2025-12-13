@@ -30,6 +30,8 @@ class Character:
         self.inventory = []
         self.equipped_items = {}
         
+        self.melee_cooldown = 0.0
+
         self.alive = True
 
     def get_speed(self) -> float:
@@ -53,6 +55,14 @@ class Character:
             self.stamina = 0
         if self.mana < 0:
             self.mana = 0
+        
+        self.melee_cooldown = max(0.0, self.melee_cooldown - dt)
+
+    def take_damage(self, amount: int):
+        self.health -= amount
+        print(f"{self.name} takes {amount} damage! Health is now {self.health}.")
+        if self.health <= 0:
+            self.die()
 
     def draw(self, surface, camera,color = c.WHITE):
         screen_pos = camera.apply(self.pos)
@@ -64,38 +74,48 @@ class Character:
         )
 
     def melee_attack(self, targets, attack_dir: pygame.Vector2):
-        weapon = self.equipped_items.get("weapon")
-        if weapon is None:
-            return []
-
-        if attack_dir.length_squared() == 0:
-            return []
-
-        if self.stamina < weapon.stamina_cost:
-            damage = weapon.damage // 2
+        if self.melee_cooldown > 0.0:
+            return 0, [] 
         else:
-            damage = weapon.damage
+            weapon = self.equipped_items.get("weapon")
+            if weapon is None:
+                return 0, []
+            self.melee_cooldown = weapon.cooldown
 
-        attack_dir = attack_dir.normalize()
-        arc_cos = math.cos(math.radians(weapon.arc_deg / 2))
+            if weapon is None:
+                return 0, []
 
-        hits = []
-        for t in targets:
-            if not getattr(t, "alive", True):
-                continue
+            if attack_dir.length_squared() == 0:
+                return 0, []
 
-            to_t = t.pos - self.pos
-            dist = to_t.length()
-            if dist == 0 or dist > weapon.reach:
-                continue
+            if self.stamina < weapon.stamina_cost:
+                damage = weapon.damage // 2
+            else:
+                damage = weapon.damage
 
-            if attack_dir.dot(to_t / dist) >= arc_cos:
-                hits.append(t)
+            attack_dir = attack_dir.normalize()
+            arc_cos = math.cos(math.radians(weapon.arc_deg / 2))
 
-        if hits:
-            self.stamina =max(0, self.stamina - weapon.stamina_cost)
+            hits = []
+            if isinstance(targets, Character):
+                targets = [targets]
+            for t in targets:
+                if not getattr(t, "alive", True):
+                    continue
 
-        return damage,hits
+                to_t = t.pos - self.pos
+                dist = to_t.length()
+                if dist == 0 or dist > weapon.reach:
+                    continue
+
+                if attack_dir.dot(to_t / dist) >= arc_cos:
+                    hits.append(t)
+
+            
+            if hits:
+                self.stamina =max(0, self.stamina - weapon.stamina_cost)
+
+            return damage,hits
 
 
 
