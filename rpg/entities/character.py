@@ -1,4 +1,5 @@
 import pygame
+import data.colors as c
 
 class Character:
     def __init__(self, name: str, pos: pygame.Vector2):
@@ -33,9 +34,16 @@ class Character:
 
     def update(self, dt: float):
         self.pos += self.velocity * dt
+        if self.velocity != pygame.Vector2(0, 0):
+            print(self.pos)
 
-    def draw(self,surface):
-        pygame.draw.circle(surface, (255, 0, 0), (int(self.pos.x), int(self.pos.y)), 15)
-
+    def draw(self, surface, camera):
+        screen_pos = camera.apply(self.pos)
+        pygame.draw.circle(
+            surface,
+            c.WHITE,
+            (int(screen_pos.x), int(screen_pos.y)),
+            15
+        )
 
 

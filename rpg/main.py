@@ -4,6 +4,8 @@ from entities.player import Player
 from entities.enemy import Enemy
 from entities.ui import StatusBar
 import data.colors as c
+from systems.camera import Camera
+
 
 
 #initialize pygame
@@ -26,6 +28,15 @@ stamina_bar = StatusBar((10,40), (200,20), c.GREEN, lambda: player.stamina, play
 mana_bar    = StatusBar((10,70), (200,20), c.BLUE,  lambda: player.mana,    player.max_mana)
 status_bars = [health_bar,stamina_bar,mana_bar]
 
+
+#systems
+camera = Camera((WIDTH, HEIGHT), (2000, 2000))
+
+#world setup
+world_background = pygame.Surface((2000, 2000))
+background_image = pygame.image.load('rpg/assets/gradient.png').convert()
+world_background.blit(background_image, (0, 0))
+
 #main game loop
 running = True
 while running:
@@ -43,6 +54,7 @@ while running:
     #update-----------------
     player.update(dt)
     
+
     #update UI elements
     for bar in status_bars:
         if isinstance(bar, StatusBar):
@@ -50,9 +62,14 @@ while running:
 
 
     #draw------------------
-    window.fill((0, 0, 0))
-    player.draw(window)
+    # window.fill((0, 0, 0))
+    window.blit(world_background, camera.apply(pygame.Vector2(0, 0)))
+    camera.follow(player.pos)
+    player.draw(window, camera)
 
+   
+
+    
     #draw UI elements
     for bar in status_bars:
         bar.draw(window)
