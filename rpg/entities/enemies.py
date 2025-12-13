@@ -1,6 +1,6 @@
-from entities.character import Character
 import pygame
-import data.weapons
+from entities.character import Character
+from rpg.data import weapons
 
 
 class Melee_Enemy(Character):
@@ -34,7 +34,7 @@ class Goblin(Melee_Enemy):
         self.max_health = 50
         self.health = self.max_health
         self.base_speed = 400
-        self.equipped_items['weapon'] = data.weapons.GOBLIN_DAGGER
+        self.equipped_items['weapon'] = weapons.GOBLIN_DAGGER
 
         print(self.equipped_items['weapon'].damage)
 

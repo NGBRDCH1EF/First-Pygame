@@ -1,12 +1,11 @@
 import pygame
 import random
-from entities.character import Character
-from entities.player import Player
-from entities.ui import StatusBar
-from entities.enemies import Goblin
-import data.colors as c
-from systems.camera import Camera
-import data.weapons
+from rpg.entities.player import Player
+from rpg.entities.ui import StatusBar
+from rpg.entities.enemies import Goblin
+from rpg.systems.camera import Camera
+from rpg.data import colors as c
+from rpg.data import weapons
 
 
 
@@ -19,11 +18,11 @@ clock = pygame.time.Clock()
 
 #player setup
 player = Player('Player1',pygame.Vector2(WIDTH//2,HEIGHT//2))
-player.equipped_items['weapon'] = data.weapons.HALBERD
+player.equipped_items['weapon'] = weapons.HALBERD
 
 #entity lists
 enemies = []
-weapons_in_world:list[data.weapons.Weapon] = []
+weapons_in_world:list[weapons.Weapon] = []
 
 #ui objects
 health_bar  = StatusBar((10,10), (200,20), c.RED,   lambda: player.health,  player.max_health)

@@ -1,7 +1,9 @@
-from entities.character import Character
 import pygame
-from systems.camera import Camera
-import math
+from .character import Character
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from rpg.systems.camera import Camera
 
 class Player(Character):
     def handle_input(self, keys):

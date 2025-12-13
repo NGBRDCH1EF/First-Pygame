@@ -1,7 +1,5 @@
 import pygame
-import data.colors as c
-import data.weapons
-import math
+from rpg.data import colors as c
 
 class Character:
     def __init__(self, name: str, pos: pygame.Vector2):
