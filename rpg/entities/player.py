@@ -14,15 +14,19 @@ class Player(Character):
         self.velocity = direction * self.get_speed()
 
     def try_attack(self,enemies:list = None, camera:Camera=None):
+        #set damage
         weapon = self.equipped_items.get('weapon', None)            
         if weapon is None:
             print(f"{self.name} has no weapon equipped!")
             return
         damage = weapon.damage
+        
+        # check stamina
         if self.stamina < weapon.stamina_cost:
             damage = damage // 2  # half damage if low stamina
         self.stamina -= weapon.stamina_cost 
 
+        #calculate attack direction
         mouse_pos = camera.screen_to_world(pygame.Vector2(pygame.mouse.get_pos()))
         attack_vec = mouse_pos - self.pos
 
@@ -35,7 +39,8 @@ class Player(Character):
             return
         
         arc_cos = math.cos(math.radians(weapon.arc_deg / 2))
-
+        
+        #hit detection
         for enemy in enemies:
             if not getattr(enemy, "alive", True):
                 continue
