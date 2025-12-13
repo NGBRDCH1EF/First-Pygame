@@ -18,4 +18,5 @@ class Camera:
     def apply(self, world_pos: pygame.Vector2) -> pygame.Vector2:
         return world_pos - self.offset
 
-    
+    def screen_to_world(self, screen_pos) -> pygame.Vector2:
+        return pygame.Vector2(screen_pos) + self.offset

@@ -1,4 +1,5 @@
 import pygame
+import random
 from entities.character import Character
 from entities.player import Player
 from entities.enemy import Enemy
@@ -18,10 +19,11 @@ clock = pygame.time.Clock()
 
 #player setup
 player = Player('Player1',pygame.Vector2(WIDTH//2,HEIGHT//2))
-
+player.equipped_items['weapon'] = data.weapons.HALBERD
 
 #entity lists
 enemies:list[Enemy] = []
+weapons_in_world:list[data.weapons.Weapon] = []
 
 #ui objects
 health_bar  = StatusBar((10,10), (200,20), c.RED,   lambda: player.health,  player.max_health)
@@ -39,6 +41,9 @@ background_image = pygame.image.load('rpg/assets/gradient.png').convert()
 background_image = pygame.transform.scale(background_image, (2000, 2000))
 world_background.blit(background_image, (0, 0))
 
+#weapons
+
+
 #main game loop
 running = True
 while running:
@@ -47,6 +52,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:  # Left click
+                player.try_attack(enemies, camera)
 
     #input handling---------
     keys = pygame.key.get_pressed()
@@ -55,6 +63,22 @@ while running:
 
     #update-----------------
     player.update(dt)
+    for e in enemies[:]:
+        e.think(player.pos)
+        e.update(dt)
+        if not e.alive:
+            enemies.remove(e)
+    
+    #spawn enemies for testing
+    if len(enemies) < 5:
+        enemy = Enemy(f"Enemy{len(enemies)+1}", pygame.Vector2(
+            pygame.Vector2(
+                random.randint(0, 2000),
+                random.randint(0, 2000)
+            )
+        ))
+        enemies.append(enemy)
+        
     
 
     #update UI elements
@@ -69,7 +93,10 @@ while running:
     camera.follow(player.pos)
     player.draw(window, camera)
 
-   
+    for enemy in enemies:
+        enemy.draw(window, camera,color=c.RED)
+
+    
     
     #draw UI elements
     for bar in status_bars:

@@ -4,11 +4,12 @@ from dataclasses import dataclass
 class Weapon:
     name: str
     damage: int
-    reach: float          # pixels
-    arc_deg: float        # total arc in degrees
-    cooldown: float       # seconds
-    art:str               # path to art asset
-
+    reach: float      # pixels
+    arc_deg: float    # total arc
+    cooldown: float   # seconds
+    art: str  # path to art asset
+    stamina_cost: int = 10  # default stamina cost per attack
+    
 
 # Example weapons
 
@@ -18,7 +19,8 @@ DAGGER = Weapon(
     reach=40,
     arc_deg=60,
     cooldown=0.3,
-    art = "rpg/assets/weapons/dagger.png"
+    stamina_cost=5,
+    art = "rpg/assets/dagger.png"
 )
 
 SWORD = Weapon(
@@ -27,7 +29,8 @@ SWORD = Weapon(
     reach=60,
     arc_deg=100,
     cooldown=0.5,
-    art = "rpg/assets/weapons/sword.png"
+    stamina_cost=15,
+    art = "rpg/assets/sword.png"
 )
 
 HALBERD = Weapon(
@@ -36,5 +39,6 @@ HALBERD = Weapon(
     reach=90,
     arc_deg=70,
     cooldown=0.8,
-    art = "rpg/assets/weapons/halberd.png"
+    stamina_cost=25,
+    art = "rpg/assets/halberd.png"
 )
