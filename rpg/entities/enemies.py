@@ -22,10 +22,6 @@ class Melee_Enemy(Character):
             if hits:
                 target.take_damage(hits[0])
                 
-            
-
-
-    
 
     def die(self):
         self.alive = False

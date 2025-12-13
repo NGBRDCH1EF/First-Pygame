@@ -57,7 +57,6 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Left click
                 attack_dir = player.melee_aim(camera)
-                attack_dir = player.melee_aim(camera)
                 damage,hits = player.melee_attack(enemies, attack_dir)
                 for enemy in hits:
                     enemy.take_damage(damage)
